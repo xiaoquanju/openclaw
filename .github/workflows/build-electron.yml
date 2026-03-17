@@ -21,8 +21,7 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        # 自动使用 package.json 中 packageManager 字段指定的版本
 
       - name: Install dependencies (root)
         run: pnpm install --frozen-lockfile
@@ -67,8 +66,7 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        # 自动使用 package.json 中 packageManager 字段指定的版本
 
       - name: Install dependencies (root)
         run: pnpm install --frozen-lockfile
