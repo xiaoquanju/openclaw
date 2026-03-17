@@ -1,0 +1,96 @@
+name: Build Electron App
+
+on:
+  workflow_dispatch:  # 手动触发
+  push:
+    paths:
+      - 'ui/**'
+      - '.github/workflows/build-electron.yml'
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies (root)
+        run: pnpm install --frozen-lockfile
+        continue-on-error: true
+
+      - name: Install dependencies (ui)
+        working-directory: ui
+        run: npm install
+
+      - name: Build Electron app (macOS, unsigned)
+        working-directory: ui
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'  # 跳过签名
+        run: |
+          npm run build
+          npx electron-builder --mac --dir
+
+      - name: List build output
+        working-directory: ui
+        run: ls -la release/ || ls -la dist/
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openclaw-mac-unsigned
+          path: |
+            ui/release/mac*/
+            ui/release/*.dmg
+            ui/dist/mac*/
+          if-no-files-found: warn
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies (root)
+        run: pnpm install --frozen-lockfile
+        continue-on-error: true
+
+      - name: Install dependencies (ui)
+        working-directory: ui
+        run: npm install
+
+      - name: Build Electron app (Windows, unsigned)
+        working-directory: ui
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          npm run build
+          npx electron-builder --win --dir
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openclaw-win-unsigned
+          path: |
+            ui/release/win*/
+            ui/dist/win*/
+          if-no-files-found: warn
