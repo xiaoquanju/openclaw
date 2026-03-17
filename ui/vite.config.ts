@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
+const isElectronBuild = process.env.ELECTRON_BUILD === "1";
 
 function normalizeBase(input: string): string {
   const trimmed = input.trim();
@@ -20,15 +21,26 @@ function normalizeBase(input: string): string {
 
 export default defineConfig(() => {
   const envBase = process.env.OPENCLAW_CONTROL_UI_BASE_PATH?.trim();
-  const base = envBase ? normalizeBase(envBase) : "./";
+  // Electron loads from file://, must use relative paths
+  const base = isElectronBuild ? "./" : envBase ? normalizeBase(envBase) : "./";
+  // Electron renderer output goes to dist/renderer; original web build goes to ../dist/control-ui
+  const outDir = isElectronBuild
+    ? path.resolve(here, "dist/renderer")
+    : path.resolve(here, "../dist/control-ui");
+
   return {
     base,
     publicDir: path.resolve(here, "public"),
+    define: {
+      // `local-storage.ts` references `process.env.VITEST` which doesn't exist in the browser.
+      // Replace it at build time so it won't throw a ReferenceError.
+      "process.env.VITEST": "undefined",
+    },
     optimizeDeps: {
       include: ["lit/directives/repeat.js"],
     },
     build: {
-      outDir: path.resolve(here, "../dist/control-ui"),
+      outDir,
       emptyOutDir: true,
       sourcemap: true,
       // Keep CI/onboard logs clean; current control UI chunking is intentionally above 500 kB.

@@ -18,6 +18,7 @@ __pycache__/
 ui/src/ui/__screenshots__/
 ui/playwright-report/
 ui/test-results/
+ui/release/
 packages/dashboard-next/.next/
 packages/dashboard-next/out/
 

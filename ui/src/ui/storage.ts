@@ -54,6 +54,11 @@ function formatHostWithPort(hostname: string, port: string): string {
 }
 
 function deriveDefaultGatewayUrl(): { pageUrl: string; effectiveUrl: string } {
+  // In Electron packaged app (file:// protocol), use default localhost gateway
+  if (location.protocol === "file:") {
+    const defaultUrl = "ws://localhost:18789";
+    return { pageUrl: defaultUrl, effectiveUrl: defaultUrl };
+  }
   const proto = location.protocol === "https:" ? "wss" : "ws";
   const configured =
     typeof window !== "undefined" &&

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.openclaw.control-ui",
+  "productName": "OpenClaw Control",
+  "directories": {
+    "output": "release"
+  },
+  "files": ["dist/electron/**/*", "dist/renderer/**/*", "public/**/*"],
+  "win": {
+    "target": ["dir"],
+    "forceCodeSigning": false,
+    "signAndEditExecutable": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "shortcutName": "OpenClaw Control"
+  },
+  "mac": {
+    "target": ["dmg"],
+    "icon": "public/apple-touch-icon.png",
+    "category": "public.app-category.developer-tools"
+  },
+  "linux": {
+    "target": ["AppImage"],
+    "icon": "public/favicon.svg",
+    "category": "Development"
+  }
+}
