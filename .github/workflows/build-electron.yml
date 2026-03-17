@@ -34,9 +34,11 @@ jobs:
       - name: Build Electron app (macOS, unsigned)
         working-directory: ui
         env:
+          ELECTRON_BUILD: '1'
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'  # 跳过签名
         run: |
           npm run build
+          node scripts/build-electron.mjs
           npx electron-builder --mac --dir
 
       - name: List build output
@@ -79,9 +81,11 @@ jobs:
       - name: Build Electron app (Windows, unsigned)
         working-directory: ui
         env:
+          ELECTRON_BUILD: '1'
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: |
           npm run build
+          node scripts/build-electron.mjs
           npx electron-builder --win --dir
 
       - name: Upload Windows artifact
