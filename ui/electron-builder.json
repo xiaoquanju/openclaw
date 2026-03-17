@@ -18,9 +18,10 @@
     "shortcutName": "OpenClaw Control"
   },
   "mac": {
-    "target": ["dmg"],
-    "icon": "public/apple-touch-icon.png",
-    "category": "public.app-category.developer-tools"
+    "target": ["dir"],
+    "icon": "public/favicon.ico",
+    "category": "public.app-category.developer-tools",
+    "identity": null
   },
   "linux": {
     "target": ["AppImage"],
