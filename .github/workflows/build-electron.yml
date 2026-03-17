@@ -46,7 +46,7 @@ jobs:
         run: ls -la release/ || ls -la dist/
 
       - name: Upload macOS artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: openclaw-mac-unsigned
           path: |
@@ -89,7 +89,7 @@ jobs:
           npx electron-builder --win --dir
 
       - name: Upload Windows artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: openclaw-win-unsigned
           path: |
